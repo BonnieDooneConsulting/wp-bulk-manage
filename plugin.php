@@ -9,6 +9,7 @@
  */
 
 require_once('classes/wp_bulk_manage_base.php');
+require_once('classes/wp_bulk_manage_user_export.php');
 
 /**
  * Main plugin class
@@ -61,6 +62,13 @@ class wp_bulk_manage_plugin {
             'manage_options',
             $this->base->users_admin_page,
             array($this, 'admin_users_page'));
+	    add_submenu_page(
+		    $this->base->plugin_admin_page,
+		    __('User Export'),
+		    __('User Export'),
+		    'manage_options',
+		    $this->base->user_export_admin_page,
+		    array($this, 'admin_users_export_page'));
     }
 
     /**
@@ -104,14 +112,29 @@ class wp_bulk_manage_plugin {
         $content = array(
             'menuItems' => apply_filters('wp_bulk_manage_admin_menu', array() ),
             'plugin_admin_page' => $this->base->users_admin_page,
-            'config' => $this->base->users_config,
-            'config_name' => $this->base->users_config_name
+            'config' => $this->base->user_export_config,
+            'config_name' => $this->base->user_export_config_name
         );
 
         $this->base->view->load('admin_header', $content);
         $this->base->view->load('admin_users_form', $content);
         $this->base->view->load('admin_footer');
     }
+
+	public function admin_users_export_page() {
+		$this->check_privilege();
+
+		$content = array(
+			'menuItems' => apply_filters('wp_bulk_manage_admin_menu', array() ),
+			'plugin_admin_page' => $this->base->users_admin_page,
+			'config' => $this->base->users_config,
+			'config_name' => $this->base->users_config_name
+		);
+
+		$this->base->view->load('admin_header', $content);
+		$this->base->view->load('admin_users_export_form', $content);
+		$this->base->view->load('admin_footer');
+	}
 
     public function activation() {
 
@@ -128,7 +151,7 @@ class wp_bulk_manage_plugin {
      */
     public function _admin_enqueue($hook) {
         //TODO: fix the page name here
-        $hooks = array('wp-bulk-manage-users-settings');
+        $hooks = array('bulk-manage_page_wp-bulk-manage-user-export-settings');
         if (in_array($hook, $hooks)) {
             wp_enqueue_script('wp_bulk_manage_users_settings', plugin_dir_url( __FILE__ ) . 'assets/js/bulk-manage-users.js', array('jquery'));
             wp_localize_script('wp_bulk_manage_users_settings', 'wp_bulk_manage', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
@@ -141,6 +164,7 @@ class wp_bulk_manage_plugin {
      */
     private function _wordpress_hooks() {
         add_action( 'admin_enqueue_scripts', array($this, '_admin_enqueue'));
+	    add_action( 'wp_ajax_export_users', array($this->base->user_export, 'export_users'));
     }
 
     /**
