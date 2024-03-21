@@ -43,9 +43,12 @@ class wp_bulk_manage_plugin {
         $this->_wordpress_hooks();
     }
 
-    /**
-     * @return void
-     */
+	/**
+	 * @method initialize_menu
+	 *
+	 * @return void
+	 * @author awilson
+	 */
     public function initialize_menu() {
         add_menu_page(
             __('Bulk Manage Admin'),
@@ -71,11 +74,12 @@ class wp_bulk_manage_plugin {
 		    array($this, 'admin_users_export_page'));
     }
 
-    /**
-     *  Function for admin init stuff
-     *  @param void
-     *  @return void
-     */
+	/**
+	 * @method admin_initialize
+	 *
+	 * @return void
+	 * @author awilson
+	 */
     public function admin_initialize(){
         register_setting($this->base->config_name . '_group', $this->base->config_name, array($this->base, '_sanitize_option_input'));
         register_setting($this->base->users_config_name . '_group', $this->base->users_config_name, array($this->base, '_sanitize_option_input'));
@@ -121,6 +125,12 @@ class wp_bulk_manage_plugin {
         $this->base->view->load('admin_footer');
     }
 
+	/**
+	 * @method admin_users_export_page
+	 *
+	 * @return void
+	 * @author awilson
+	 */
 	public function admin_users_export_page() {
 		$this->check_privilege();
 
@@ -159,9 +169,12 @@ class wp_bulk_manage_plugin {
         }
     }
 
-    /**
-     * @return void
-     */
+	/**
+	 * @method _wordpress_hooks
+	 *
+	 * @return void
+	 * @author awilson
+	 */
     private function _wordpress_hooks() {
         add_action( 'admin_enqueue_scripts', array($this, '_admin_enqueue'));
 	    add_action( 'wp_ajax_export_users', array($this->base->user_export, 'export_users'));
