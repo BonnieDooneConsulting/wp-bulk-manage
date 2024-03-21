@@ -21,7 +21,7 @@ class wp_bulk_manage_base {
 	    $this->user_export_config = $this->wp->get_option($this->user_export_config_name, $user_export_config);
 
         $this->plugin_admin_page = 'wp-bulk-manage-settings';
-        $this->users_admin_page  = 'wp-bulk-manage-user-settings';
+        $this->user_management_admin_page  = 'wp-bulk-manage-user-settings';
 		$this->user_export_admin_page = 'wp-bulk-manage-user-export-settings';
 
         if($this->config['logging'] == 1 && !defined('WP_BULK_MANAGE_LOG_ENABLED')){
@@ -43,9 +43,9 @@ class wp_bulk_manage_base {
      */
     public function add_tab_items($menu){
         $menu[] = array('title' => __('Settings'), 'page' => $this->plugin_admin_page);
-        $menu[] = array('title' => __('Bulk Manage Users'), 'page' => $this->users_admin_page);
 	    $menu[] = array('title' => __('User Export'), 'page' => $this->user_export_admin_page);
-        return $menu;
+	    $menu[] = array('title' => __('Manage Users'), 'page' => $this->user_management_admin_page);
+	    return $menu;
     }
 
     /**

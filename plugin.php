@@ -49,18 +49,18 @@ class wp_bulk_manage_plugin {
     public function initialize_menu() {
         add_menu_page(
             __('Bulk Manage Admin'),
-            __('Bulk Manage'),
+            __('Settings'),
             'manage_options',
             $this->base->plugin_admin_page,
             array($this, 'admin_page'),
-            plugin_dir_url(__FILE__) . 'assets/img/wp-bulk-favicon.png',
+            plugin_dir_url(__FILE__) . 'assets/img/favicon-16x16.png',
             98);
         add_submenu_page(
             $this->base->plugin_admin_page,
-            __('User Settings'),
-            __('User Settings'),
+            __('Manage Users'),
+            __('Manage Users'),
             'manage_options',
-            $this->base->users_admin_page,
+            $this->base->user_management_admin_page,
             array($this, 'admin_users_page'));
 	    add_submenu_page(
 		    $this->base->plugin_admin_page,
@@ -111,7 +111,7 @@ class wp_bulk_manage_plugin {
 
         $content = array(
             'menuItems' => apply_filters('wp_bulk_manage_admin_menu', array() ),
-            'plugin_admin_page' => $this->base->users_admin_page,
+            'plugin_admin_page' => $this->base->user_management_admin_page,
             'config' => $this->base->user_export_config,
             'config_name' => $this->base->user_export_config_name
         );
@@ -126,8 +126,8 @@ class wp_bulk_manage_plugin {
 
 		$content = array(
 			'menuItems' => apply_filters('wp_bulk_manage_admin_menu', array() ),
-			'plugin_admin_page' => $this->base->users_admin_page,
-			'config' => $this->base->users_config,
+			'plugin_admin_page' => $this->base->user_export_admin_page,
+			'config' => $this->base->user_export_config,
 			'config_name' => $this->base->users_config_name
 		);
 
@@ -137,7 +137,7 @@ class wp_bulk_manage_plugin {
 	}
 
     public function activation() {
-
+		// add cron to cleanup old user exports
     }
 
     public function deactivation() {
@@ -165,6 +165,7 @@ class wp_bulk_manage_plugin {
     private function _wordpress_hooks() {
         add_action( 'admin_enqueue_scripts', array($this, '_admin_enqueue'));
 	    add_action( 'wp_ajax_export_users', array($this->base->user_export, 'export_users'));
+	    add_action( 'wp_ajax_download_user_export', array($this->base->user_export, 'download_user_export'));
     }
 
     /**
