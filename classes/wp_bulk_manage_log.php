@@ -34,7 +34,7 @@ class wp_bulk_manage_log {
 
         if ( $this->enabled == true ) {
             // Ensure we don't log info that have 'password' in it
-            if ( strpos( $args[0], 'password' ) === false ) {
+            if ( ! str_contains( $args[0], 'password' ) ) {
                 error_log('*** WP Bulk Manage Log: ' . $method . ': ' . $args[0] );
 
                 if ( isset( $args[ 1] ) ) {
