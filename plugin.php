@@ -52,7 +52,7 @@ class wp_bulk_manage_plugin {
     public function initialize_menu() {
         add_menu_page(
             __('Bulk Manage Admin'),
-            __('Settings'),
+            __('Bulk Manage Admin'),
             'manage_options',
             $this->base->plugin_admin_page,
             array($this, 'admin_page'),
@@ -147,7 +147,7 @@ class wp_bulk_manage_plugin {
 	}
 
     public function activation() {
-		// add cron to cleanup old user exports
+		// add cron to clean up old user exports
     }
 
     public function deactivation() {
@@ -161,7 +161,7 @@ class wp_bulk_manage_plugin {
      */
     public function _admin_enqueue($hook) {
         //TODO: fix the page name here
-        $hooks = array('bulk-manage_page_wp-bulk-manage-user-export-settings');
+        $hooks = array('bulk-manage-admin_page_wp-bulk-manage-user-export-settings');
         if (in_array($hook, $hooks)) {
             wp_enqueue_script('wp_bulk_manage_users_settings', plugin_dir_url( __FILE__ ) . 'assets/js/bulk-manage-users.js', array('jquery'));
             wp_localize_script('wp_bulk_manage_users_settings', 'wp_bulk_manage', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
@@ -179,11 +179,15 @@ class wp_bulk_manage_plugin {
         add_action( 'admin_enqueue_scripts', array($this, '_admin_enqueue'));
 	    add_action( 'wp_ajax_export_users', array($this->base->user_export, 'export_users'));
 	    add_action( 'wp_ajax_download_user_export', array($this->base->user_export, 'download_user_export'));
+	    add_action( 'wp_ajax_delete_user_upload', array($this->base->user_manage, 'delete_user_upload'));
     }
 
-    /**
-     * @return void
-     */
+	/**
+	 * @method check_privilege
+	 *
+	 * @return void
+	 * @author awilson
+	 */
     private function check_privilege() {
         if (!current_user_can('manage_options')) {
             wp_die('You do not have sufficient permissions to access this page.');

@@ -6,6 +6,7 @@ class wp_bulk_manage_base {
         include_once('wp_bulk_manage_database_wrapper.php');
         include_once('wp_bulk_manage_log.php');
         include_once('wp_bulk_manage_view.php');
+		include_once('wp_bulk_manage_users.php');
 
         $this->config_name       = 'wp_bulk_manage_base_config';
         $this->users_config_name = 'wp_bulk_manage_users_config';
@@ -31,6 +32,7 @@ class wp_bulk_manage_base {
         $this->log  = new wp_bulk_manage_log();
         $this->view = new wp_bulk_manage_view($this->log);
 		$this->user_export = new wp_bulk_manage_user_export($this->log);
+		$this->user_manage = new wp_bulk_manage_users($this->log);
         add_filter( 'wp_bulk_manage_admin_menu', array($this, 'add_tab_items'), 1, 1);
 
     }

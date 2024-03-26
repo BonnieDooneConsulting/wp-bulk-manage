@@ -12,6 +12,12 @@ class wp_bulk_manage_user_export {
 		$this->log = $log;
 	}
 
+	/**
+	 * @method export_users
+	 *
+	 * @return void
+	 * @author awilson
+	 */
 	public function export_users() {
 		$user_query = $this->get_wp_user_query( [] );
 
@@ -20,10 +26,13 @@ class wp_bulk_manage_user_export {
 			$dir      = dirname( __DIR__ ) . "/downloads/" . $filename;
 			$handle   = fopen( $dir, "w" );
 			// get header from keys
-			$headers = $user_query->query_vars['fields'];
-			fputcsv($handle, $headers);
+			$headers   = $user_query->query_vars['fields'];
+			$headers[] = 'posts';
+			fputcsv( $handle, $headers );
 
 			foreach ( $user_query->get_results() as $user ) {
+				$user->posts = json_encode( wp_list_pluck( $this->get_post_query( $user->id )->get_posts(),
+					'post_title', 'ID' ) );
 				unset( $user->id );
 				fputcsv( $handle, (array) $user );
 			}
@@ -49,12 +58,12 @@ class wp_bulk_manage_user_export {
 	 * @author awilson
 	 */
 	public function download_user_export() {
-		if (! isset($_GET['export_name'])) {
+		if ( ! isset( $_GET['export_name'] ) ) {
 			exit;
 		}
 
 		$filename = $_GET['export_name'];
-		$this->download_csv_file($filename);
+		$this->download_csv_file( $filename );
 		exit;
 	}
 
@@ -68,6 +77,8 @@ class wp_bulk_manage_user_export {
 	 */
 	private function get_wp_user_query( array $args ): WP_User_Query {
 		$args = array_merge( $args, [
+			// limit to five users for now
+			//'number' => 5,
 			'role'   => 'Subscriber',
 			'fields' => [
 				'id',
@@ -88,10 +99,14 @@ class wp_bulk_manage_user_export {
 	 * @return WP_Query
 	 * @author awilson
 	 */
-	private function get_post_query( int $user_id, array $args ): WP_Query {
+	private function get_post_query( int $user_id, array $args = [] ): WP_Query {
 		$args = array_merge( $args, [
-			'author'         => $user_id,
-			'posts_per_page' => - 1,
+			'author'    => $user_id,
+			'post_type' => 'abstracts',
+			'fields'    => [
+				'ID',
+				'post_title',
+			]
 		] );
 
 		return new WP_Query( $args );
@@ -105,15 +120,15 @@ class wp_bulk_manage_user_export {
 	 * @return void
 	 * @author awilson
 	 */
-	private function download_csv_file(string $filename) {
+	private function download_csv_file( string $filename ) {
 		$full_file_name = dirname( __DIR__ ) . "/downloads/" . $filename;
-		$f = fopen($full_file_name, 'r');
+		$f              = fopen( $full_file_name, 'r' );
 		// tell the browser it's going to be a csv file
-		header('Content-Type: text/csv');
+		header( 'Content-Type: text/csv' );
 		// tell the browser we want to save it instead of displaying it
-		header('Content-Disposition: attachment; filename="'.$filename.'";');
+		header( 'Content-Disposition: attachment; filename="' . $filename . '";' );
 		// make php send the generated csv lines to the browser
-		fpassthru($f);
+		fpassthru( $f );
 	}
 
 }
