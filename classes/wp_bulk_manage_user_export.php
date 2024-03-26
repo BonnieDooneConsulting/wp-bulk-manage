@@ -102,6 +102,7 @@ class wp_bulk_manage_user_export {
 	private function get_post_query( int $user_id, array $args = [] ): WP_Query {
 		$args = array_merge( $args, [
 			'author'    => $user_id,
+			// TODO: add a filter for this so it's not hard coded
 			'post_type' => 'abstracts',
 			'fields'    => [
 				'ID',
