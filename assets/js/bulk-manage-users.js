@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
     jQuery('#user-exports').click(function(e) {
-        $(this).prop('disabled', true);
+        //$(this).prop('disabled', true);
         var data = {
             'action': 'export_users'
         };
@@ -9,6 +9,26 @@ jQuery(document).ready(function($) {
             jQuery('#user-export-count').text(response.user_count + ' user(s) exported');
             jQuery('#download-user-exports').prop('disabled', false);
             jQuery('#export-filename-id').attr('value', response.export_name);
+        });
+    });
+
+    jQuery('#delete-users').submit(function(e){
+        e.preventDefault();
+        var form = document.getElementById('delete-users');
+        var formData = new FormData(form);
+        jQuery.ajax({
+            url: wp_bulk_manage.ajaxurl + '?action=delete_user_upload',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                alert('Your form has been sent successfully.');
+            },
+            error: function (xhr, status, error) {
+                alert('Your form was not sent successfully.');
+                console.error(error);
+            }
         });
     });
 
