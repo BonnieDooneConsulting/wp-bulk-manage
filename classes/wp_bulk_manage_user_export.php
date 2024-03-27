@@ -78,7 +78,7 @@ class wp_bulk_manage_user_export {
 	private function get_wp_user_query( array $args ): WP_User_Query {
 		$args = array_merge( $args, [
 			// limit to five users for now
-			//'number' => 5,
+			'number' => 5,
 			'role'   => 'Subscriber',
 			'fields' => [
 				'id',

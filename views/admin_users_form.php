@@ -8,10 +8,10 @@
         </th>
         <td>
             <form id="delete-users">
-                <input type="file" id="avatar" name="user-delete" accept=".csv"/>
+                <input type="file" id="user-delete-id" name="user-delete" accept=".csv"/>
                 <br>
                 <br>
-                <button id="user-exports" type="submit" class="button button-primary">Export Users</button>
+                <button id="user-exports" type="submit" class="button button-primary">Delete Users</button>
             </form>
         </td>
     </tr>

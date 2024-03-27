@@ -161,7 +161,11 @@ class wp_bulk_manage_plugin {
      */
     public function _admin_enqueue($hook) {
         //TODO: fix the page name here
-        $hooks = array('bulk-manage-admin_page_wp-bulk-manage-user-export-settings');
+        $hooks = [
+			'bulk-manage-admin_page_wp-bulk-manage-user-export-settings',
+	        'bulk-manage-admin_page_wp-bulk-manage-user-settings',
+	        ];
+
         if (in_array($hook, $hooks)) {
             wp_enqueue_script('wp_bulk_manage_users_settings', plugin_dir_url( __FILE__ ) . 'assets/js/bulk-manage-users.js', array('jquery'));
             wp_localize_script('wp_bulk_manage_users_settings', 'wp_bulk_manage', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
