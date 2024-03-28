@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
     jQuery('#user-exports').click(function(e) {
-        //$(this).prop('disabled', true);
+        $(this).prop('disabled', true);
         var data = {
             'action': 'export_users'
         };
