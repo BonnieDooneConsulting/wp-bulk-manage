@@ -18,7 +18,7 @@ class wp_bulk_manage_user_export {
 	 * @return void
 	 * @author awilson
 	 */
-	public function export_users() {
+	public function export_users(): void {
 		$user_query = $this->get_wp_user_query( [] );
 
 		if ( ! empty( $user_query->get_results() ) ) {
@@ -57,7 +57,7 @@ class wp_bulk_manage_user_export {
 	 * @return void
 	 * @author awilson
 	 */
-	public function download_user_export() {
+	public function download_user_export(): void {
 		if ( ! isset( $_GET['export_name'] ) ) {
 			exit;
 		}
@@ -121,7 +121,7 @@ class wp_bulk_manage_user_export {
 	 * @return void
 	 * @author awilson
 	 */
-	private function download_csv_file( string $filename ) {
+	private function download_csv_file( string $filename ): void {
 		$full_file_name = dirname( __DIR__ ) . "/downloads/" . $filename;
 		$f              = fopen( $full_file_name, 'r' );
 		// tell the browser it's going to be a csv file
@@ -131,5 +131,4 @@ class wp_bulk_manage_user_export {
 		// make php send the generated csv lines to the browser
 		fpassthru( $f );
 	}
-
 }
