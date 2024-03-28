@@ -52,8 +52,8 @@ class wp_bulk_manage_plugin {
 	 */
 	public function initialize_menu(): void {
 		add_menu_page(
-			__( 'Bulk Manage Admin' ),
-			__( 'Bulk Manage Admin' ),
+			__( 'Bulk Manage' ),
+			__( 'Bulk Manage' ),
 			'manage_options',
 			$this->base->plugin_admin_page,
 			array( $this, 'admin_page' ),
