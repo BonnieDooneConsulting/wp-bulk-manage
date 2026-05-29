@@ -6,7 +6,10 @@ class wp_bulk_manage_base {
         include_once('wp_bulk_manage_database_wrapper.php');
         include_once('wp_bulk_manage_log.php');
         include_once('wp_bulk_manage_view.php');
-		include_once('wp_bulk_manage_users.php');
+        include_once('wp_bulk_manage_member_query.php');
+        include_once('wp_bulk_manage_deletion_log.php');
+        include_once('wp_bulk_manage_exclusions.php');
+        include_once('wp_bulk_manage_member_delete.php');
 
         $this->config_name       = 'wp_bulk_manage_base_config';
         $this->users_config_name = 'wp_bulk_manage_users_config';
@@ -24,6 +27,8 @@ class wp_bulk_manage_base {
         $this->plugin_admin_page = 'wp-bulk-manage-settings';
         $this->user_management_admin_page  = 'wp-bulk-manage-user-settings';
 		$this->user_export_admin_page = 'wp-bulk-manage-user-export-settings';
+		$this->exclusions_admin_page = 'wp-bulk-manage-exclusions-settings';
+		$this->deletion_log_admin_page = 'wp-bulk-manage-deletion-log';
 
         if($this->config['logging'] == 1 && !defined('WP_BULK_MANAGE_LOG_ENABLED')){
             define('WP_BULK_MANAGE_LOG_ENABLED', $this->config['logging']);
@@ -32,7 +37,10 @@ class wp_bulk_manage_base {
         $this->log  = new wp_bulk_manage_log();
         $this->view = new wp_bulk_manage_view($this->log);
 		$this->user_export = new wp_bulk_manage_user_export($this->log);
-		$this->user_manage = new wp_bulk_manage_users($this->log);
+		$this->member_query = new wp_bulk_manage_member_query($this->log);
+		$this->deletion_log = new wp_bulk_manage_deletion_log($this->log);
+		$this->exclusions = new wp_bulk_manage_exclusions($this->log);
+		$this->member_delete = new wp_bulk_manage_member_delete($this->log, $this->member_query, $this->deletion_log, $this->exclusions);
         add_filter( 'wp_bulk_manage_admin_menu', array($this, 'add_tab_items'), 1, 1);
 
     }
@@ -46,7 +54,9 @@ class wp_bulk_manage_base {
     public function add_tab_items($menu){
         $menu[] = array('title' => __('Settings'), 'page' => $this->plugin_admin_page);
 	    $menu[] = array('title' => __('User Export'), 'page' => $this->user_export_admin_page);
-	    $menu[] = array('title' => __('Manage Users'), 'page' => $this->user_management_admin_page);
+	    $menu[] = array('title' => __('Bulk Delete Members'), 'page' => $this->user_management_admin_page);
+	    $menu[] = array('title' => __('Protected Users'), 'page' => $this->exclusions_admin_page);
+	    $menu[] = array('title' => __('Deletion Log'), 'page' => $this->deletion_log_admin_page);
 	    return $menu;
     }
 
