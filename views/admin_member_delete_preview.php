@@ -86,6 +86,12 @@ $count = count( $candidates );
 							<td><?php echo (int) $row->last_paid_year; ?></td>
 							<td><?php echo esc_html( mysql2date( 'Y-m-d', $row->user_registered ) ); ?></td>
 							<td>
+								<a href="<?php echo esc_url( admin_url( 'user-edit.php?user_id=' . (int) $row->ID ) ); ?>"
+								   class="button"
+								   target="_blank"
+								   rel="noopener noreferrer">
+									<?php esc_html_e( 'View profile' ); ?>
+								</a>
 								<button type="button"
 								        class="button button-link-delete exclude-permanently-btn"
 								        data-user-id="<?php echo (int) $row->ID; ?>">
